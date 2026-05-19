@@ -1,27 +1,114 @@
 import React from 'react';
 import Button from '../components/CustomButton';
 import profilePic from '../assets/profile.jpg';
+import { NavLink } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 const AboutPage = () => (
   <div className="flex w-full flex-col gap-6">
 
-    {/* ✅ ABOUT SECTION */}
+    {/* ================= HEADER ================= */}
+    <header className="sticky top-0 z-50 w-full border-b border-pink-200 bg-white/70 backdrop-blur-md shadow-sm">
+      <div className="flex items-center justify-between px-6 py-3 lg:px-12">
+
+        {/* LOGO */}
+        <div className="flex items-center gap-3">
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-10 w-10 rounded-full border-2 border-pink-300 shadow-sm"
+          />
+
+          <span className="text-lg font-extrabold bg-gradient-to-r from-pink-500 to-pink-700 bg-clip-text text-transparent">
+            Rhyza Portfolio
+          </span>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-6">
+
+          {/* NAVIGATION */}
+          <nav className="flex items-center gap-8 text-sm font-semibold">
+
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `relative group ${
+                  isActive ? "text-pink-900 font-bold" : "text-pink-700"
+                }`
+              }
+            >
+              HOME
+              <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </NavLink>
+
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `relative group ${
+                  isActive ? "text-pink-900 font-bold" : "text-pink-700"
+                }`
+              }
+            >
+              ABOUT
+              <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </NavLink>
+
+            <NavLink
+              to="/articles"
+              className={({ isActive }) =>
+                `relative group ${
+                  isActive ? "text-pink-900 font-bold" : "text-pink-700"
+                }`
+              }
+            >
+              ARTICLES
+              <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-pink-600 transition-all duration-300 group-hover:w-full"></span>
+            </NavLink>
+
+          </nav>
+
+          {/* AUTH BUTTONS */}
+          <div className="flex items-center gap-3">
+
+            <Button
+              to="/auth/signin"
+              className="bg-white border border-pink-300 text-pink-700 hover:bg-pink-100"
+            >
+              Sign In
+            </Button>
+
+            <Button to="/auth/signup">
+              Sign Up
+            </Button>
+
+          </div>
+
+        </div>
+
+      </div>
+    </header>
+
+    {/* ================= ABOUT SECTION ================= */}
     <section className="border-b border-pink-200 bg-gradient-to-r from-pink-50 via-white to-pink-100 px-4 py-8 sm:px-6 lg:px-8">
       <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-        
-        {/* Profile Image */}
+
+        {/* IMAGE */}
         <div className="rounded-3xl border border-pink-200 bg-white p-6 shadow-sm">
           <div className="flex min-h-72 items-center justify-center rounded-[1.25rem] bg-pink-100">
+
             <img
               src={profilePic}
               alt="Rhyza Estrella"
               className="h-44 w-44 rounded-full object-cover border-4 border-pink-300 shadow-md transition duration-300 hover:scale-105"
             />
+
           </div>
         </div>
 
-        {/* About Content */}
+        {/* TEXT */}
         <div>
+
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-pink-500">
             About Me
           </p>
@@ -31,76 +118,103 @@ const AboutPage = () => (
           </h1>
 
           <p className="mt-4 max-w-lg text-sm leading-7 text-pink-600 sm:text-base">
-            I am <strong>Rhyza Ann Hernandez Estrella</strong>, a Bachelor of Science in Information Technology student 
-            specializing in <strong>Mobile & Web Application Development</strong>. I focus on building clean, user-friendly systems and exploring modern technologies.
+            I am <strong>Rhyza Ann Hernandez Estrella</strong>, a Bachelor of Science in Information Technology student
+            specializing in <strong>Mobile & Web Application Development</strong>.
+            I focus on building clean, user-friendly systems and exploring modern technologies.
           </p>
 
           <p className="mt-3 max-w-lg text-sm leading-7 text-pink-600 sm:text-base">
-            In our capstone project, I served as a <strong>Mobile Developer</strong> for <strong>ReliefLink</strong>, 
-            integrating <strong>blockchain technology</strong> to improve transparency and efficiency in relief operations.
+            In our capstone project, I served as a <strong>Mobile Developer</strong> for
+            <strong> ReliefLink</strong>, integrating <strong>blockchain technology</strong>
+            to improve transparency and efficiency in relief operations.
           </p>
 
           <p className="mt-3 max-w-lg text-sm leading-7 text-pink-600 sm:text-base">
-            I am also active in leadership and student organizations. I became the 
-            <strong> Block Representative of INF 233</strong> and served as 
-            <strong> VP of Finance</strong> for the <strong>JBECP</strong>, where I was recognized as an 
+            I am also active in leadership and student organizations. I became the
+            <strong> Block Representative of INF 233</strong> and served as
+            <strong> VP of Finance</strong> for the <strong>JBECP</strong>, where I was recognized as an
             <strong> Outstanding Finance Officer</strong>.
           </p>
 
           <p className="mt-3 max-w-lg text-sm leading-7 text-pink-600 sm:text-base">
-            I was also part of the <strong>NU-CCIT Student Council</strong> under the <strong>OVP</strong>, 
-            gaining experience in teamwork, coordination, and leadership.
+            I was also part of the <strong>NU-CCIT Student Council</strong> under the
+            <strong> OVP</strong>, gaining experience in teamwork, coordination, and leadership.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button to="/" variant="primary">Back Home</Button>
-            <Button to="/articles">Open Articles</Button>
+
+            <Button to="/">
+              Back Home
+            </Button>
+
+            <Button to="/articles">
+              Open Articles
+            </Button>
+
           </div>
+
         </div>
 
       </div>
     </section>
 
-    {/* ✅ PROFILE OVERVIEW */}
+    {/* ================= PROFILE OVERVIEW ================= */}
     <section className="bg-pink-50 px-4 py-8 sm:px-6 lg:px-8">
+
       <div className="mb-4">
+
         <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-pink-500">
           Profile Overview
         </p>
+
         <h2 className="mt-2 text-2xl font-semibold text-pink-900">
           Quick summary blocks
         </h2>
+
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
         {[
           { value: "04", label: "Years Learning IT" },
           { value: "10+", label: "Projects" },
           { value: "03", label: "Leadership Roles" },
           { value: "04", label: "Focus Areas" },
         ].map((item, i) => (
+
           <div
             key={i}
             className="rounded-3xl border border-pink-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
           >
-            <p className="text-2xl font-bold text-pink-900">{item.value}</p>
+
+            <p className="text-2xl font-bold text-pink-900">
+              {item.value}
+            </p>
+
             <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-pink-500">
               {item.label}
             </p>
+
           </div>
+
         ))}
+
       </div>
+
     </section>
 
-    {/* ✅ SKILLS SECTION */}
+    {/* ================= SKILLS SECTION ================= */}
     <section className="bg-pink-50 px-4 py-8 sm:px-6 lg:px-8">
+
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
 
-        {/* Skills */}
+        {/* LEFT */}
         <div>
+
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-pink-500">
             Skills & Experience
           </p>
+
           <h2 className="mt-2 text-2xl font-semibold text-pink-900">
             What I can do
           </h2>
@@ -121,45 +235,60 @@ const AboutPage = () => (
                 desc: "Leadership, communication, teamwork, adaptability, and problem-solving."
               }
             ].map((item, i) => (
+
               <article
                 key={i}
                 className="rounded-3xl border border-pink-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
+
                 <h3 className="text-lg font-semibold text-pink-900">
                   {item.title}
                 </h3>
+
                 <p className="mt-3 text-sm leading-6 text-pink-600">
                   {item.desc}
                 </p>
+
               </article>
+
             ))}
 
           </div>
+
         </div>
 
-        {/* Visual Grid */}
+        {/* RIGHT */}
         <div className="rounded-3xl border border-pink-200 bg-white p-5 shadow-sm">
+
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-pink-500">
             Visual Grid
           </p>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            {[1,2,3,4].map((_, i) => (
+
+            {[1, 2, 3, 4].map((_, i) => (
+
               <div
                 key={i}
                 className="flex aspect-square items-center justify-center rounded-[1.25rem] bg-pink-100 transition hover:scale-105"
               >
+
                 <div className="h-12 w-12 border-2 border-pink-300 bg-white" />
+
               </div>
+
             ))}
+
           </div>
 
-          <Button className="mt-5" variant="primary">
+          <Button className="mt-5">
             View Section
           </Button>
+
         </div>
 
       </div>
+
     </section>
 
   </div>
