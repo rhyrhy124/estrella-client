@@ -18,10 +18,10 @@ import SignInPage from './AuthPages/SignInPage';
 import SignUpPage from './AuthPages/SignUpPage';
 
 /* ================= DASHBOARD PAGES ================= */
-/* (still inside pages folder, but grouped logically) */
 import DashboardPage from './pages/DashboardPage';
 import ReportsPage from './pages/DashboardReport';
 import UsersPage from './pages/Users';
+import DashboardArticle from './pages/DashboardArticle';
 
 /* ================= ERROR PAGE ================= */
 import NotFoundPage from './pages/NotFoundPage';
@@ -38,14 +38,17 @@ const router = createBrowserRouter([
         index: true,
         element: <HomePage />,
       },
+
       {
         path: 'about',
         element: <AboutPage />,
       },
+
       {
         path: 'articles',
         element: <ArticleListPage />,
       },
+
       {
         path: 'articles/:name',
         element: <ArticlePage />,
@@ -63,6 +66,7 @@ const router = createBrowserRouter([
         path: 'signin',
         element: <SignInPage />,
       },
+
       {
         path: 'signup',
         element: <SignUpPage />,
@@ -80,13 +84,20 @@ const router = createBrowserRouter([
         index: true,
         element: <DashboardPage />,
       },
+
       {
         path: 'reports',
         element: <ReportsPage />,
       },
+
       {
         path: 'users',
         element: <UsersPage />,
+      },
+
+      {
+        path: 'articles',
+        element: <DashboardArticle />,
       },
     ],
   },

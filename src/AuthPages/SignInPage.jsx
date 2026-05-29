@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/CustomButton';
+import axios from 'axios';
 import logo from '../assets/logo.png';
 
 const inputClasses =
@@ -8,6 +9,30 @@ const inputClasses =
 
 const actionButtonClassName =
   'w-full rounded-xl py-3 text-[11px] tracking-[0.2em]';
+
+/* =========================
+    🧠 MANUAL ACCOUNTS (LOCAL FALLBACK)
+========================= */
+const localUsers = [
+  {
+    email: 'admin@test.com',
+    password: '123456',
+    role: 'admin',
+    name: 'Admin User',
+  },
+  {
+    email: 'editor@test.com',
+    password: '123456',
+    role: 'editor',
+    name: 'Editor User',
+  },
+  {
+    email: 'viewer@test.com',
+    password: '123456',
+    role: 'viewer',
+    name: 'Viewer User',
+  },
+];
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -24,34 +49,76 @@ const SignInPage = () => {
     }));
   };
 
-  const handleLogin = (e) => {
+const handleLogin = async (e) => {
     e.preventDefault();
 
-    const savedUser = JSON.parse(localStorage.getItem('user'));
+    let user = null;
 
-    if (!savedUser) {
-      alert('No account found. Please sign up first.');
+    /* =========================
+       1. TRY BACKEND LOGIN
+    ========================= */
+    try {
+      const res = await axios.post(
+        'http://localhost:8000/api/users/login',
+        form
+      );
+
+      user = res.data;
+
+    } catch (err) {
+      console.log('Backend failed, using local fallback...');
+    }
+
+    /* =========================
+       2. FALLBACK LOCAL LOGIN
+    ========================= */
+    if (!user || (!user.type && !user.role)) {
+      user = localUsers.find(
+        (u) =>
+          u.email === form.email &&
+          u.password === form.password
+      );
+    }
+
+    /* =========================
+       3. INVALID LOGIN
+    ========================= */
+    if (!user) {
+      alert('Invalid email or password');
       return;
     }
 
-    if (
-      form.email === savedUser.email &&
-      form.password === savedUser.password
-    ) {
-      localStorage.setItem('isLoggedIn', 'true');
+    /* =========================
+       4. BLOCK VIEWER
+    ========================= */
+    const userRole = user.type || user.role;
+    if (userRole === 'viewer' || userRole === 'Viewer') {
+      alert('Access Denied: Viewer cannot login');
+      return;
+    }
 
-      // optional: store current user session
-      localStorage.setItem(
-        'currentUser',
-        JSON.stringify({
-          email: savedUser.email,
-          name: savedUser.firstName,
-        })
-      );
+    /* =========================
+       5. GENERATE MOCK TOKEN FOR LOCAL USERS
+    ========================= */
+    const token = user.token || `local-token-${Date.now()}`;
 
-      navigate('/home');
-    } else {
-      alert('Invalid email or password');
+    /* =========================
+       6. SAVE SESSION
+    ========================= */
+    localStorage.setItem('currentUser', JSON.stringify({
+      email: user.email,
+      firstName: user.firstName || user.name,
+      type: userRole,
+      token: token,
+    }));
+
+    /* =========================
+       7. ROLE ROUTING
+    ========================= */
+    if (userRole === 'admin' || userRole === 'Admin') {
+      navigate('/dashboard');
+    } else if (userRole === 'editor' || userRole === 'Editor') {
+      navigate('/dashboard/articles');
     }
   };
 
@@ -62,110 +129,48 @@ const SignInPage = () => {
         <img src={logo} alt="logo" className="w-20 h-20 object-contain" />
       </div>
 
-      <h1 className="text-3xl font-bold tracking-tight text-pink-900 sm:text-4xl">
-        Log In
-      </h1>
+      <h1 className="text-3xl font-bold text-pink-900">Log In</h1>
 
-      <p className="mt-3 text-sm leading-6 text-pink-600">
-        Access your portfolio account using your credentials.
+      <p className="mt-3 text-sm text-pink-600">
+        Access your portfolio account
       </p>
 
       <form onSubmit={handleLogin} className="mt-8 space-y-5">
 
-        {/* EMAIL */}
-        <div>
-          <label
-            htmlFor="signin-email"
-            className="text-sm font-medium text-pink-700"
-          >
-            Email Address
-          </label>
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          className={inputClasses}
+          onChange={handleChange}
+          required
+        />
 
-          <input
-            id="signin-email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            autoComplete="email"
-            className={inputClasses}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          className={inputClasses}
+          onChange={handleChange}
+          required
+        />
 
-        {/* PASSWORD */}
-        <div>
-          <label
-            htmlFor="signin-password"
-            className="text-sm font-medium text-pink-700"
-          >
-            Password
-          </label>
-
-          <input
-            id="signin-password"
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-            autoComplete="current-password"
-            className={inputClasses}
-            onChange={handleChange}
-            required
-          />
-
-          <p className="mt-2 text-xs leading-5 text-pink-500">
-            Use at least 8 characters with letters and numbers.
-          </p>
-        </div>
-
-        {/* REMEMBER / FORGOT */}
-        <div className="flex items-center justify-between gap-4 text-sm">
-
-          <label className="flex items-center gap-2 text-pink-600">
-            <input
-              type="checkbox"
-              className="h-4 w-4 rounded border-pink-300 accent-pink-600"
-            />
-            <span>Remember me</span>
-          </label>
-
-          <button
-            type="button"
-            className="font-medium text-pink-700 transition hover:text-pink-900"
-          >
-            Forgot Password?
-          </button>
-
-        </div>
-
-        {/* LOGIN BUTTON */}
         <Button type="submit" className={actionButtonClassName}>
           Log In
         </Button>
-
-        {/* SOCIAL BUTTONS */}
-        <div className="grid gap-3 pt-2 sm:grid-cols-2">
-
-          <Button type="button" className={actionButtonClassName}>
-            Google
-          </Button>
-
-          <Button type="button" className={actionButtonClassName}>
-            Apple
-          </Button>
-
-        </div>
-
       </form>
 
-      {/* SIGN UP LINK */}
-      <div className="mt-8 border-t border-pink-200 pt-6 text-sm text-pink-600">
-        No account yet?{' '}
-        <Link
-          to="/auth/signup"
-          className="font-semibold text-pink-900 transition hover:text-pink-600"
-        >
+      {/* LINKS */}
+      <div className="mt-6 text-sm text-pink-600">
+        No account?{' '}
+        <Link to="/auth/signup" className="font-semibold">
           Sign Up
+        </Link>
+
+        <br />
+
+        <Link to="/home" className="font-semibold text-pink-900">
+          Go to Portfolio Home
         </Link>
       </div>
     </>

@@ -1,0 +1,13 @@
+{
+  "firstName": "Test",
+  "lastName": "User2",
+  "age": "25",
+  "gender": "Male",
+  "contactNumber": "1234567890",
+  "email": "test2@example.com",
+  "username": "testuser2",
+  "password": "testpass",
+  "address": "123 Test St",
+  "type": "editor",
+  "isActive": true
+}

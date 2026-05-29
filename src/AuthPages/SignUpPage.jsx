@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/CustomButton';
+import axios from 'axios';
 
 const inputClasses =
   'mt-2 w-full rounded-xl border border-pink-300 bg-pink-50 px-4 py-3 text-sm text-pink-900 outline-none transition placeholder:text-pink-400 focus:border-pink-600 focus:bg-white';
@@ -8,14 +9,20 @@ const inputClasses =
 const actionButtonClassName =
   'w-full rounded-xl py-3 text-[11px] tracking-[0.2em]';
 
-const SignUpPage = () => {
+function SignUpPage() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
+    age: '',
+    gender: '',
+    contactNumber: '',
     email: '',
     password: '',
+    address: '',
+    type: 'editor',
+    isActive: true,
   });
 
   const handleChange = (e) => {
@@ -25,7 +32,7 @@ const SignUpPage = () => {
     }));
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     // basic validation
@@ -34,31 +41,32 @@ const SignUpPage = () => {
       return;
     }
 
-    // SAVE USER TO LOCALSTORAGE
-    const newUser = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      password: form.password,
-    };
+    try {
+      const res = await axios.post(
+        'http://localhost:8000/api/users',
+        form
+      );
 
-    localStorage.setItem('user', JSON.stringify(newUser));
+      if (res.data.user) {
+        localStorage.setItem('currentUser', JSON.stringify({
+          email: res.data.user.email,
+          firstName: res.data.user.firstName,
+          type: res.data.user.type,
+          token: res.data.token, // Store the token
+        }));
 
-    // auto login after signup
-    localStorage.setItem('isLoggedIn', 'true');
-
-    // optional session
-    localStorage.setItem(
-      'currentUser',
-      JSON.stringify({
-        email: newUser.email,
-        name: newUser.firstName,
-      })
-    );
-
-    // redirect to homepage
-    navigate('/home');
-  };
+        if (res.data.user.type === 'admin') {
+          navigate('/dashboard');
+        } else if (res.data.user.type === 'editor') {
+          navigate('/dashboard/articles');
+        } else {
+          navigate('/home');
+        }
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || 'Signup failed');
+    }
+  }
 
   return (
     <>
@@ -107,6 +115,77 @@ const SignUpPage = () => {
             />
           </div>
 
+        </div>
+
+        {/* AGE */}
+        <div>
+          <label htmlFor="age" className="text-sm font-medium text-pink-700">
+            Age
+          </label>
+
+          <input
+            id="age"
+            name="age"
+            type="number"
+            placeholder="Age"
+            className={inputClasses}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* GENDER */}
+        <div>
+          <label htmlFor="gender" className="text-sm font-medium text-pink-700">
+            Gender
+          </label>
+
+          <select
+            id="gender"
+            name="gender"
+            className={inputClasses}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        {/* CONTACT */}
+        <div>
+          <label htmlFor="contactNumber" className="text-sm font-medium text-pink-700">
+            Contact Number
+          </label>
+
+          <input
+            id="contactNumber"
+            name="contactNumber"
+            type="text"
+            placeholder="Contact Number"
+            className={inputClasses}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* ADDRESS */}
+        <div>
+          <label htmlFor="address" className="text-sm font-medium text-pink-700">
+            Address
+          </label>
+
+          <input
+            id="address"
+            name="address"
+            type="text"
+            placeholder="Address"
+            className={inputClasses}
+            onChange={handleChange}
+            required
+          />
         </div>
 
         {/* EMAIL */}
@@ -179,6 +258,6 @@ const SignUpPage = () => {
       </div>
     </>
   );
-};
+}
 
 export default SignUpPage;
